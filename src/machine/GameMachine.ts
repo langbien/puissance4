@@ -15,6 +15,22 @@ export const GameMachine = createMachine({
             on: {
                 join: {
                     target: GameStates.LOBBY
+                },
+                leave: {
+                    target: GameStates.LOBBY
+                },
+                chooseColor: {
+                    target: GameStates.LOBBY
+                },
+                start: {
+                    target: GameStates.PLAY
+                }
+            }
+        },
+        [GameStates.PLAY]: {
+            on: {
+                dropToken: {
+                    target: '???'
                 }
             }
         }
