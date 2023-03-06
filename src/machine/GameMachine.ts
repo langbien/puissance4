@@ -1,4 +1,6 @@
-import { createMachine } from "xstate";
+import { Player, GridState, PlayerColor } from './../types';
+import { createMachine } from "xstate"
+import { createModel } from "xstate/lib/model"
 
 enum GameStates {
     LOBBY = 'LOBBY',
@@ -6,6 +8,29 @@ enum GameStates {
     VICTORY = 'VICTORY',
     DRAW = 'DRAW'
 }
+
+export const GameModel = createModel({
+    players: [] as Player[],
+    currentPlayer: null as null | Player['id'],
+    rowLength: 4,
+    grid: [
+        ["E", "E", "E", "E", "E", "E", "E"],
+        ["E", "E", "E", "E", "E", "E", "E"],
+        ["E", "E", "E", "E", "E", "E", "E"],
+        ["E", "E", "E", "E", "E", "E", "E"],
+        ["E", "E", "E", "E", "E", "E", "E"],
+        ["E", "E", "E", "E", "E", "E", "E"]
+    ] as GridState
+}, {
+    events: {
+        join: (playerId: Player["id"], name: Player["name"]) => ({ playerId, name }),
+        leave: (playerId: Player["id"]) => ({ playerId }),
+        chooseColor: (playerId: Player["id"], color: PlayerColor) => ({ playerId, color }),
+        start: (playerId: Player["id"]) => ({playerId}),
+        dropToken: (playerId: Player["id"], x: number) => ({playerId, x}),
+        restart: () => ({}), 
+    }
+})
 
 export const GameMachine = createMachine({
     id: 'game',
@@ -31,6 +56,20 @@ export const GameMachine = createMachine({
             on: {
                 dropToken: {
                     target: '???'
+                }
+            }
+        },
+        [GameStates.VICTORY]: {
+            on: {
+                restart: {
+                    target: GameStates.LOBBY
+                }
+            }
+        },
+        [GameStates.DRAW]: {
+            on: {
+                restart: {
+                    target: GameStates.LOBBY
                 }
             }
         }
