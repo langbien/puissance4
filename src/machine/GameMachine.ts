@@ -28,12 +28,13 @@ export const GameModel = createModel({
         chooseColor: (playerId: Player["id"], color: PlayerColor) => ({ playerId, color }),
         start: (playerId: Player["id"]) => ({playerId}),
         dropToken: (playerId: Player["id"], x: number) => ({playerId, x}),
-        restart: () => ({}), 
+        restart: (playerId: Player["id"]) => ({playerId}), 
     }
 })
 
-export const GameMachine = createMachine({
+export const GameMachine = GameModel.createMachine({
     id: 'game',
+    context: GameModel.initialContext,
     initial: GameStates.LOBBY,
     states: {
         [GameStates.LOBBY]: {
