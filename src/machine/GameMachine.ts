@@ -1,3 +1,4 @@
+import { canJoinGuard } from './guards';
 import { Player, GridState, PlayerColor } from './../types';
 import { createMachine } from "xstate"
 import { createModel } from "xstate/lib/model"
@@ -40,6 +41,7 @@ export const GameMachine = GameModel.createMachine({
         [GameStates.LOBBY]: {
             on: {
                 join: {
+                    cond: canJoinGuard,
                     target: GameStates.LOBBY
                 },
                 leave: {
@@ -56,7 +58,7 @@ export const GameMachine = GameModel.createMachine({
         [GameStates.PLAY]: {
             on: {
                 dropToken: {
-                    target: '???'
+                    target: GameStates.VICTORY
                 }
             }
         },

@@ -1,5 +1,5 @@
-import { GameContext, GameEvent } from './../types';
+import { GameContext, GameEvent, GameGuard } from './../types';
 
-export const canJoinGuard = (context: GameContext, event: GameEvent<"join">) => {
-    
+export const canJoinGuard: GameGuard<"join"> = (context, event) => {
+    return context.players.length < 2 && context.players.find(p => p.id === event.playerId) === undefined
 }
