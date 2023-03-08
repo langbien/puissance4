@@ -1,3 +1,4 @@
+import { joinGameAction } from './actions';
 import { canJoinGuard } from './guards';
 import { Player, GridState, PlayerColor } from './../types';
 import { createMachine } from "xstate"
@@ -42,6 +43,7 @@ export const GameMachine = GameModel.createMachine({
             on: {
                 join: {
                     cond: canJoinGuard,
+                    actions: [GameModel.assign(joinGameAction)],
                     target: GameStates.LOBBY
                 },
                 leave: {
